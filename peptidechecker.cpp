@@ -23,12 +23,13 @@ void findCandidatePeptides(double target_mass,vector<char>& component_aminos,
                                 vector<double>& component_masses, int n) {
     double water_mass = 18.0106;
     double cap_mass = 41.0265;
+    double tolerance = 1.0;
 
     double candidate_mass = sum_vector(component_masses);
     candidate_mass = candidate_mass - water_mass*(component_masses.size()-1) + cap_mass;
 
-    if(abs(candidate_mass-target_mass)<1){
-        cout << "Mass: "<< candidate_mass << " ";
+    if(abs(candidate_mass-target_mass)<tolerance){
+        cout << "> "<< candidate_mass << "\n";
         string s(component_aminos.begin(),component_aminos.end());
         cout << s << "\n";
     }
