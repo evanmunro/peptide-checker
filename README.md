@@ -11,14 +11,14 @@ double tolerance = 1.0;
 
 #### Installation and Usage
 
-Compilation:
-In the command line:
+1. Download the repository and unzip it.
+2. Navigate to the peptide-checker folder in the command line using `cd YOUR_DIRECTORY_PATH`.
+3. Compile in the command line using:
 ```
 g++ -std=c++11 peptidechecker.cpp
 ```
 
-Execution:
-
+4. Execute in the command line using:
 ```
 ./a.out
 ```
