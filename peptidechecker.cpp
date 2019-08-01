@@ -9,6 +9,8 @@
 #include <cmath>
 using namespace std;
 
+double CAP_MASS = 41.0265;
+double WATER_MASS = 18.0106;
 double sum_vector(vector<double>& masses) {
     double sum  = 0.0;
     for (int i = 0 ; i < masses.size(); i++){
@@ -20,13 +22,10 @@ double sum_vector(vector<double>& masses) {
 //recursive function to search for side products of a peptide synthesis of
 //a certain mass
 void findCandidatePeptides(double target_mass,vector<char>& component_aminos,
-                                vector<double>& component_masses, int n) {
-    double water_mass = 18.0106;
-    double cap_mass = 41.0265;
+                                vector<double>& component_masses, int end_ignore, int n) {
     double tolerance = 1.0;
-
     double candidate_mass = sum_vector(component_masses);
-    candidate_mass = candidate_mass - water_mass*(component_masses.size()-1) + cap_mass;
+    candidate_mass = candidate_mass - WATER_MASS*(component_masses.size()-1) + CAP_MASS;
 
     if(abs(candidate_mass-target_mass)<tolerance){
         cout << "> "<< candidate_mass << "\n";
@@ -38,14 +37,14 @@ void findCandidatePeptides(double target_mass,vector<char>& component_aminos,
         return;
     }
 
-    for (int i = n ; i < component_masses.size(); i++) {
+    for (int i = n ; i < component_masses.size()-end_ignore; i++) {
         vector<double> drop_one_mass(component_masses.size());
         copy(component_masses.begin(), component_masses.end(),drop_one_mass.begin());
         vector<char> drop_one_acids(component_aminos.size());
         copy(component_aminos.begin(), component_aminos.end(),drop_one_acids.begin());
         drop_one_mass.erase(drop_one_mass.begin()+i);
         drop_one_acids.erase(drop_one_acids.begin()+i);
-        findCandidatePeptides(target_mass,drop_one_acids,drop_one_mass,i);
+        findCandidatePeptides(target_mass,drop_one_acids,drop_one_mass,end_ignore,i);
     }
 
 
@@ -78,7 +77,8 @@ int main()
         {'V', 117.079}
     };
     string peptide;
-    int mass;
+    double mass;
+    int end_ignore;
     //int min_mass;
     cout << "Enter the peptide string: ";
     cin >> peptide;
@@ -87,12 +87,27 @@ int main()
     for (int i = 0; i < (pept.size()); i++) {
         arr[i] = amino_mass[pept[i]];
     }
-    double total_mass = sum_vector(arr) - 18.0106*(arr.size()-1)+41.0265;
+    double total_mass = sum_vector(arr) - WATER_MASS*(arr.size()-1)+CAP_MASS;
     cout << "Total Peptide Mass: " << total_mass << "\n";
-    cout << "Enter the assumed mass of side product derived from LCMS output: ";
+    cout << "Enter the assumed mass of unknown side product derived from LCMS output,"
+    " \n or 0 if you want to just see a list of masses for truncated peptides: ";
     cin >> mass;
-
-    findCandidatePeptides(mass,pept,arr,0);
-
+    //Assuming synthesis starting from the end of the peptide string
+    if (mass ==0.0) {
+        double running_sum = arr[pept.size()-1];
+        string running_pept= peptide.substr(pept.size()-1,1);
+        for (int i =pept.size()-2; i >=0 ; i=i-1) {
+            running_sum += arr[i]-WATER_MASS;
+            running_pept = peptide[i] + running_pept;
+            cout << running_sum+CAP_MASS << " " << running_pept << "\n";
+        }
+        return 0;
+    }
+    else {
+        cout << "Enter the number of amino acids at the end of"
+        "the peptide, \n that you would like to assume do not fail to couple when checking combinations: ";
+        cin >> end_ignore;
+        findCandidatePeptides(mass,pept,arr,end_ignore,0);
+    }
     return 0;
 }
