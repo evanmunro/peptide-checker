@@ -21,15 +21,27 @@ double sum_vector(vector<double>& masses) {
 
 //recursive function to search for side products of a peptide synthesis of
 //a certain mass
-void findCandidatePeptides(double target_mass,vector<char>& component_aminos,
+void findCandidatePeptides(vector<char>& orig_pep,double target_mass,vector<char>& component_aminos,
                                 vector<double>& component_masses, int end_ignore, int n) {
     double tolerance = 1.0;
     double candidate_mass = sum_vector(component_masses);
     candidate_mass = candidate_mass - WATER_MASS*(component_masses.size()-1) + CAP_MASS;
 
     if(abs(candidate_mass-target_mass)<tolerance){
-        cout << "> "<< candidate_mass << "\n";
-        string s(component_aminos.begin(),component_aminos.end());
+        cout << candidate_mass << ", ";
+        vector<char> side_product(orig_pep.begin(),orig_pep.end());
+        int j = orig_pep.size()-1;
+        for (int i =component_aminos.size()-1; i >=0 ; i=i-1) {
+            bool match = (component_aminos[i]== orig_pep[j]);
+            while(!match){
+                side_product[j] = '*';
+                j = j-1;
+                match = (component_aminos[i]== orig_pep[j]);
+            }
+            side_product[j] = component_aminos[i];
+            j=j-1;
+        }
+        string s(side_product.begin(),side_product.end());
         cout << s << "\n";
     }
 
@@ -44,7 +56,7 @@ void findCandidatePeptides(double target_mass,vector<char>& component_aminos,
         copy(component_aminos.begin(), component_aminos.end(),drop_one_acids.begin());
         drop_one_mass.erase(drop_one_mass.begin()+i);
         drop_one_acids.erase(drop_one_acids.begin()+i);
-        findCandidatePeptides(target_mass,drop_one_acids,drop_one_mass,end_ignore,i);
+        findCandidatePeptides(orig_pep,target_mass,drop_one_acids,drop_one_mass,end_ignore,i);
     }
 
 
@@ -107,7 +119,7 @@ int main()
         cout << "Enter the number of amino acids at the end of"
         "the peptide, \n that you would like to assume do not fail to couple when checking combinations: ";
         cin >> end_ignore;
-        findCandidatePeptides(mass,pept,arr,end_ignore,0);
+        findCandidatePeptides(pept,mass,pept,arr,end_ignore,0);
     }
     return 0;
 }
