@@ -117,7 +117,7 @@ int main()
     }
     else {
         cout << "Enter the number of amino acids at the end of"
-        "the peptide, \n that you would like to assume do not fail to couple when checking combinations: ";
+        " the peptide, \n that you would like to assume do not fail to couple when checking combinations: ";
         cin >> end_ignore;
         findCandidatePeptides(pept,mass,pept,arr,end_ignore,0);
     }
