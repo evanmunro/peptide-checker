@@ -115,7 +115,11 @@ int main()
         for (int i =pept.size()-2; i >=0 ; i=i-1) {
             running_sum += arr[i]-WATER_MASS;
             running_pept = peptide[i] + running_pept;
-            cout << running_sum+CAP_MASS << " " << running_pept << "\n";
+            cout << running_sum+CAP_MASS << ", " << running_pept;
+            for (int k =1; k < 9; k++) {
+                cout <<", "<< (running_sum+CAP_MASS+k)/k;
+            }
+            cout << "\n";
         }
         return 0;
     }
