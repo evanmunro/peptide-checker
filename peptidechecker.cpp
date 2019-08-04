@@ -31,21 +31,20 @@ void findCandidatePeptides(vector<char>& orig_pep,double target_mass,vector<char
         cout << candidate_mass << ", ";
         vector<char> side_product(orig_pep.begin(),orig_pep.end());
         int j = orig_pep.size()-1;
-        if(component_aminos[0]!=orig_pep[0]) {
-            side_product[0] = '*';
-        }
-        for (int k =1; k < component_aminos.size() ; k++) {
-            int i = component_aminos.size()-k;
-            bool match = (component_aminos[i]== orig_pep[j]);
-            while(!match&& j>=0){
+        int i = component_aminos.size()-1;
+        while(j>=0 && i >=0 ) {
+            if(component_aminos[i]== orig_pep[j]){
+                j= j-1;
+                i=i-1;
+            }
+            else{
                 side_product[j] = '*';
-                j = j-1;
-                match = (component_aminos[i]== orig_pep[j]);
+                j= j-1;
             }
-            if(match) {
-                side_product[j] = component_aminos[i];
-                j=j-1;
-            }
+        }
+        while(j>=0) {
+            side_product[j] = '*';
+            j= j-1;
         }
         string s(side_product.begin(),side_product.end());
         cout << s << "\n";
