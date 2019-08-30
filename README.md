@@ -23,8 +23,6 @@ g++ -std=c++11 peptidechecker.cpp
 ./a.out
 ```
 
-Example output:
+#### Web application Alternative 
 
-```
-Enter the peptide string:
-```
+For users without C++ or the desire to deal with the command line, the logic from this program has been implemented in a web interface using R Shiny. The web application is at https://evanmunro.shinyapps.io/peptide-checker-app/. The code for the web application is at https://github.com/evanmunro/peptide-checker-app. 
